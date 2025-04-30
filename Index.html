@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Swimming Pool Cover Technician App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f3f7f9;
+      color: #333;
+    }
+    header {
+      background: #0066cc;
+      color: white;
+      text-align: center;
+      padding: 1.5em;
+    }
+    #main {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    select, button, input[type="file"], input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .question, .result {
+      background: #eef6fb;
+      padding: 15px;
+      margin-top: 20px;
+      border-left: 5px solid #0066cc;
+      border-radius: 5px;
+    }
+    .button-group {
+      margin-top: 15px;
+    }
+    .button-group button {
+      width: 48%;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .button-group button:hover {
+      background-color: #004a99;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Compact Admin Login */
+    #adminLogin {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.85em;
+    }
+    #adminLogin input {
+      width: 60%;
+      padding: 5px;
+      margin-right: 5px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    #adminLogin button {
+      width: auto;
+      padding: 5px 10px;
+      font-size: 0.9em;
+    }
+    /* Admin Panel */
+    #adminPanel {
+      display: none;
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
+    h2 {
+      font-size: 1.2em;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 4px;
+    }
+    .checkbox-label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .uploaded-image,
+    .uploaded-file {
+      max-width: 100%;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .file-list {
+      margin-top: 10px;
+    }
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f0f0f0;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .delete-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    #imageViewModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      display: none;
+      cursor: zoom-out;
+    }
+    #imageViewModal img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+    #importExportArea {
+      margin-top: 20px;
+    }
+    #importExportArea input[type="file"] {
+      margin-top: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    /* New Styles for Issue Management */
+    .issue-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    .issue-buttons input[type="text"] {
+      flex: 1;
+    }
+    .issue-list {
+      margin-top: 10px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+    .issue-list div {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+    .issue-list button {
+      font-size: 0.8em;
+      padding: 3px 6px;
+      background-color: red;
+      color: white;
+    }
+    /* Page Navigation Button (Admin Only) */
+    #manageIssuesBtn,
+    #customizeAppBtn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      background-color: #2d892c;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #manageIssuesBtn:hover,
+    #customizeAppBtn:hover {
+      background-color: #1f6b1e;
+    }
+    /* Hidden issue management page */
+    #issueManagementPage {
+      display: none;
+      background: white;
+      max-width: 600px;
+      margin: 20px auto;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #issueManagementPage h2 {
+      margin-top: 0;
+    }
+    #backToFlowBtn {
+      margin-top: 10px;
+      background-color: #6c757d;
+    }
+    #backToFlowBtn:hover {
+      background-color: #5a6268;
+    }
+
+    /* Customize App Page */
+    #customizeAppPage {
+      display: none;
+      background: white;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #customizeAppPage h2 {
+      margin-top: 0;
+    }
+    #customizeAppPage input[type="text"],
+    #customizeAppPage input[type="color"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #customizeAppPage button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #customizeAppPage button:hover {
+      background-color: #004a99;
+    }
+  </style>
+</head>
+<body>
+<header id="appHeader">Swimming Pool Cover Technician App</header>
+<div id="main">
+  <!-- Initial Issue Selection -->
+  <div id="issueSelection">
+    <label for="issueType"><strong>Select the issue you're experiencing:</strong></label>
+    <select id="issueType"></select>
+    <button onclick="startFlow()">Start Diagnosis</button>
+  </div>
+
+  <!-- Flow Engine Section -->
+  <div id="flowEngine" class="hidden"></div>
+
+  <!-- Admin Panel Toggle -->
+  <div id="adminLogin">
+    <input type="password" id="adminPass" placeholder="Password">
+    <button onclick="toggleAdmin()">Edit</button>
+  </div>
+</div>
+
+<!-- Issue Management Page -->
+<div id="issueManagementPage">
+  <h2>Edit Diagnosis Issues</h2>
+  <div class="issue-buttons">
+    <input type="text" id="newIssueName" placeholder="New issue name (e.g., light)">
+    <button onclick="addIssueType()">Add Issue</button>
+  </div>
+  <div class="issue-list" id="issueList"></div>
+  <button id="backToFlowBtn" onclick="hideIssueManagement()">Back to Flow</button>
+</div>
+
+<!-- Customize App Page -->
+<div id="customizeAppPage">
+  <h2>Customize App</h2>
+  <label for="appTitleInput">Application Title:</label>
+  <input type="text" id="appTitleInput" placeholder="Enter new title">
+
+  <label for="primaryColorInput">Primary Color:</label>
+  <input type="color" id="primaryColorInput" value="#0066cc">
+
+  <label for="secondaryColorInput">Secondary Color:</label>
+  <input type="color" id="secondaryColorInput" value="#004a99">
+
+  <button onclick="saveCustomizations()">Save Customization</button>
+  <button onclick="goBackFromCustomize()">Back to Admin</button>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel">
+  <h2>Edit Diagnosis Flow</h2>
+  <button id="manageIssuesBtn" onclick="showIssueManagement()">Manage Issues</button>
+  <button id="customizeAppBtn" onclick="showCustomizeApp()">Customize App</button>
+  <label for="editIssueType"><strong>Select Issue to Edit:</strong></label>
+  <select id="editIssueType" onchange="loadCurrentEditFlow()">
+    <option value="motor">Motor Issue</option>
+    <option value="control">Control Issue</option>
+    <option value="inverter">Inverter Issue</option>
+  </select>
+  <button onclick="addQuestion()">Add Question</button>
+  <div id="adminQuestions"></div>
+  <!-- Import / Export Section -->
+  <div id="importExportArea">
+    <button onclick="exportFlow()">Export Flow as JSON</button>
+    <button onclick="importFlow()">Import Flow from JSON</button>
+    <input type="file" id="jsonFileInput" accept=".json" hidden onchange="handleFileSelect(event)">
+    <br>
+    <button onclick="saveState()">Save Current State</button>
+    <button onclick="loadState()">Load Saved State</button>
+  </div>
+</div>
+
+<!-- Image Modal Viewer -->
+<div id="imageViewModal" onclick="this.style.display='none'">
+  <img id="modalImage" src="" alt="Zoomed image">
+</div>
+
+<script>
+  const defaultPassword = 'admin123';
+  let flow = {};
+  let questionOrder = [];
+  let currentId = '';
+  let currentIssueType = '';
+  const defaultFlows = {
+    motor: {
+      start: {
+        question: "Is the motor not turning at all?",
+        yes: "motorNoPower",
+        no: "motorIntermittent"
+      },
+      motorNoPower: {
+        question: "Check if power is reaching the motor. Is there voltage?",
+        yes: "motorCapacitorCheck",
+        no: "noPowerToMotor"
+      },
+      motorIntermittent: {
+        question: "Does the motor work intermittently or only after a reset?",
+        yes: "motorResetIssue",
+        no: "unknownMotor"
+      },
+      motorCapacitorCheck: {
+        question: "Test capacitor with multimeter. Does it hold charge?",
+        yes: "capacitorGood",
+        no: "capacitorFailed"
+      },
+      noPowerToMotor: {
+        result: true,
+        resolution: "No power detected. Check circuit breaker and wiring connections.",
+        question: "Resolution: No power detected."
+      },
+      capacitorFailed: {
+        result: true,
+        resolution: "Capacitor failed. Replace the capacitor.",
+        question: "Resolution: Capacitor failed."
+      },
+      capacitorGood: {
+        result: true,
+        resolution: "Capacitor is good. Motor may be faulty or bearings seized.",
+        question: "Resolution: Motor issue likely."
+      },
+      motorResetIssue: {
+        result: true,
+        resolution: "Motor requires frequent resets. Possible thermal overload or intermittent connection.",
+        question: "Resolution: Overload or connection issue."
+      },
+      unknownMotor: {
+        result: true,
+        resolution: "Cannot identify motor issue. Refer to manual or contact support.",
+        question: "Resolution: Unknown issue."
+      }
+    },
+    control: {
+      start: {
+        question: "Are the controls completely unresponsive?",
+        yes: "controlsNoResponse",
+        no: "controlsPartial"
+      },
+      controlsNoResponse: {
+        question: "Check power supply to control panel. Is it receiving voltage?",
+        yes: "controlBoardCheck",
+        no: "noPowerToControls"
+      },
+      controlsPartial: {
+        question: "Are some buttons working but others not?",
+        yes: "partialButtonFailure",
+        no: "unknownControls"
+      },
+      controlBoardCheck: {
+        result: true,
+        resolution: "Inspect PCB for burn marks or loose connections.",
+        question: "Resolution: PCB inspection needed."
+      },
+      noPowerToControls: {
+        result: true,
+        resolution: "No power to control panel. Check fuses and cabling.",
+        question: "Resolution: Power issue."
+      },
+      partialButtonFailure: {
+        result: true,
+        resolution: "Some buttons are unresponsive. May indicate damaged membrane or internal board.",
+        question: "Resolution: Button failure."
+      },
+      unknownControls: {
+        result: true,
+        resolution: "Unable to isolate control issue. Contact manufacturer.",
+        question: "Resolution: Unknown issue."
+      }
+    },
+    inverter: {
+      start: {
+        question: "Is the inverter displaying any error codes or blinking lights?",
+        yes: "inverterError",
+        no: "inverterNoIndication"
+      },
+      inverterError: {
+        question: "Refer to manual for error code meaning. Can the error be reset?",
+        yes: "errorResetSuccess",
+        no: "errorPersistent"
+      },
+      inverterNoIndication: {
+        question: "Check if inverter is powered on. Measure voltage at terminals.",
+        yes: "inverterPoweredOn",
+        no: "inverterNoPower"
+      },
+      errorResetSuccess: {
+        result: true,
+        resolution: "Error was reset successfully. Monitor operation.",
+        question: "Resolution: Error reset."
+      },
+      errorPersistent: {
+        result: true,
+        resolution: "Error persists. Inverter may need replacement or professional inspection.",
+        question: "Resolution: Persistent error."
+      },
+      inverterPoweredOn: {
+        result: true,
+        resolution: "Inverter has power but no output. Likely internal fault. Test further.",
+        question: "Resolution: Internal fault suspected."
+      },
+      inverterNoPower: {
+        result: true,
+        resolution: "Inverter not receiving power. Check upstream circuitry and connections.",
+        question: "Resolution: No power detected."
+      }
+    }
+  };
+
+  function getStoredIssues() {
+    const saved = localStorage.getItem('diagnosisIssueTypes');
+    return saved ? JSON.parse(saved) : ['motor', 'control', 'inverter'];
+  }
+
+  function saveStoredIssues(issues) {
+    localStorage.setItem('diagnosisIssueTypes', JSON.stringify(issues));
+  }
+
+  function populateIssueDropdown() {
+    const issueSelect = document.getElementById("issueType");
+    issueSelect.innerHTML = '<option value="">-- Please Select an Issue --</option>';
+    getStoredIssues().forEach(issue => {
+      const opt = document.createElement("option");
+      opt.value = issue;
+      opt.textContent = capitalize(issue);
+      issueSelect.appendChild(opt);
+    });
+  }
+
+  function renderIssueList() {
+    const listContainer = document.getElementById("issueList");
+    listContainer.innerHTML = '';
+    getStoredIssues().forEach((issue, index) => {
+      const div = document.createElement('div');
+      div.innerHTML = `${capitalize(issue)} <button onclick="removeIssue('${issue}', ${index})">Remove</button>`;
+      listContainer.appendChild(div);
+    });
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function addIssueType() {
+    const input = document.getElementById("newIssueName");
+    const name = input.value.trim().toLowerCase();
+    if (!name) {
+      alert("Please enter an issue type.");
+      return;
+    }
+    let issues = getStoredIssues();
+    if (issues.includes(name)) {
+      alert(`"${name}" already exists.`);
+      return;
+    }
+    issues.push(name);
+    saveStoredIssues(issues);
+    input.value = '';
+    updateEditableFlowSelector();
+    renderIssueList();
+    populateIssueDropdown();
+  }
+
+  function removeIssue(issueKey, index) {
+    if (!confirm(`Are you sure you want to remove "${capitalize(issueKey)}"?`)) return;
+    let issues = getStoredIssues();
+    issues.splice(index, 1);
+    saveStoredIssues(issues);
+    localStorage.removeItem(`diagnosisFlow_${issueKey}`);
+    updateEditableFlowSelector();
+    renderIssueList();
+    populateIssueDropdown();
+  }
+
+  function updateEditableFlowSelector() {
+    const editSelect = document.getElementById("editIssueType");
+    editSelect.innerHTML = '';
+    getStoredIssues().forEach(issue => {
+      const opt = document.createElement("option");
+      opt.value = issue;
+      opt.textContent = capitalize(issue);
+      editSelect.appendChild(opt);
+    });
+  }
+
+  function showIssueManagement() {
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('issueManagementPage').style.display = 'block';
+    renderIssueList();
+  }
+
+  function hideIssueManagement() {
+    document.getElementById('issueManagementPage').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+  }
+
+  function loadCustomizations() {
+    const savedTitle = localStorage.getItem('customAppTitle');
+    const primaryColor = localStorage.getItem('primaryColor') || '#0066cc';
+    const secondaryColor = localStorage.getItem('secondaryColor') || '#004a99';
+
+    document.getElementById('appHeader').innerText = savedTitle || 'Swimming Pool Cover Technician App';
+
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+
+    document.getElementById('appTitleInput').value = savedTitle || '';
+    document.getElementById('primaryColorInput').value = primaryColor;
+    document.getElementById('secondaryColorInput').value = secondaryColor;
+  }
+
+  function saveCustomizations() {
+    const appTitle = document.getElementById('appTitleInput').value.trim();
+    const primaryColor = document.getElementById('primaryColorInput').value;
+    const secondaryColor = document.getElementById('secondaryColorInput').value;
+
+    localStorage.setItem('customAppTitle', appTitle || '');
+    localStorage.setItem('primaryColor', primaryColor);
+    localStorage.setItem('secondaryColor', secondaryColor);
+
+    document.getElementById('appHeader').innerText = appTitle || 'Swimming Pool Cover Technician App';
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+
+    alert("Customizations saved successfully!");
+  }
+
+  function showCustomizeApp() {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('customizeAppPage').style.display = 'block';
+  }
+
+  function goBackFromCustomize() {
+    document.getElementById('customizeAppPage').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+  }
+
+  function loadCurrentFlow(issueType) {
+    const saved = localStorage.getItem(`diagnosisFlow_${issueType}`);
+    return saved ? JSON.parse(saved) : defaultFlows[issueType];
+  }
+
+  function saveCurrentFlow(issueType, flowObj) {
+    localStorage.setItem(`diagnosisFlow_${issueType}`, JSON.stringify(flowObj));
+  }
+
+  function startFlow() {
+    const selected = document.getElementById('issueType').value;
+    if (!selected || !defaultFlows[selected]) {
+      alert("Please select a valid issue type.");
+      return;
+    }
+
+    currentIssueType = selected;
+    flow = loadCurrentFlow(selected);
+    currentId = 'start';
+
+    document.getElementById('issueSelection').style.display = 'none';
+    document.getElementById('flowEngine').classList.remove('hidden');
+    renderQuestion(currentId);
+  }
+
+  function renderQuestion(id) {
+    const container = document.getElementById('flowEngine');
+    container.innerHTML = '';
+    const node = flow[id];
+
+    if (!node) {
+      container.innerHTML = "<p>No question found.</p>";
+      return;
+    }
+
+    if (node.result) {
+      container.innerHTML = `<div class="result">${node.question}<br><strong>Resolution:</strong> ${node.resolution}</div><button onclick="restartFlow()">Restart</button>`;
+    } else {
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question';
+      questionDiv.innerHTML = `<strong>${node.question}</strong><br><br>`;
+      const yesBtn = document.createElement('button');
+      yesBtn.textContent = 'Yes';
+      yesBtn.onclick = () => {
+        if (node.yes) {
+          currentId = node.yes;
+          renderQuestion(currentId);
+        }
+      };
+      const noBtn = document.createElement('button');
+      noBtn.textContent = 'No';
+      noBtn.onclick = () => {
+        if (node.no) {
+          currentId = node.no;
+          renderQuestion(currentId);
+        }
+      };
+      questionDiv.appendChild(yesBtn);
+      questionDiv.appendChild(document.createTextNode('\u00A0'));
+      questionDiv.appendChild(noBtn);
+      container.appendChild(questionDiv);
+    }
+  }
+
+  function restartFlow() {
+    document.getElementById('flowEngine').classList.add('hidden');
+    document.getElementById('issueSelection').style.display = 'block';
+  }
+
+  function toggleAdmin() {
+    const pass = document.getElementById('adminPass').value;
+    if (pass === defaultPassword) {
+      document.getElementById('adminPanel').style.display = 'block';
+      document.getElementById('adminPass').value = '';
+      loadCurrentEditFlow();
+      loadCustomizations();
+      renderIssueList();
+    } else {
+      alert('Incorrect password!');
+    }
+  }
+
+  function loadCurrentEditFlow() {
+    const issueType = document.getElementById('editIssueType').value;
+    flow = loadCurrentFlow(issueType);
+    questionOrder = Object.keys(flow);
+    renderAdminPanel();
+  }
+
+  function addQuestion() {
+    const newKey = prompt("Enter question key (e.g., q1)");
+    if (!newKey || flow[newKey]) {
+      alert("Please enter a unique key.");
+      return;
+    }
+    const questionText = prompt("Enter the question:");
+    if (!questionText) return;
+    flow[newKey] = { question: questionText, yes: "", no: "" };
+    questionOrder.push(newKey);
+    saveCurrentFlow(document.getElementById('editIssueType').value, flow);
+    renderAdminPanel();
+  }
+
+  function deleteQuestion(key) {
+    if (confirm("Delete this question?")) {
+      delete flow[key];
+      questionOrder = questionOrder.filter(k => k !== key);
+      saveCurrentFlow(document.getElementById('editIssueType').value, flow);
+      renderAdminPanel();
+    }
+  }
+
+  function updateLink(type, parentKey, direction) {
+    const options = document.getElementById(parentKey + '-' + type).options;
+    flow[parentKey][type] = options[options.selectedIndex].value;
+    saveCurrentFlow(document.getElementById('editIssueType').value, flow);
+  }
+
+  function moveQuestion(index, delta) {
+    if (index + delta < 0 || index + delta >= questionOrder.length) return;
+    const temp = questionOrder[index];
+    questionOrder[index] = questionOrder[index + delta];
+    questionOrder[index + delta] = temp;
+    renderAdminPanel();
+  }
+
+  function renderAdminPanel() {
+    const container = document.getElementById('adminQuestions');
+    container.innerHTML = '';
+    questionOrder.forEach((key, idx) => {
+      const item = flow[key];
+      const wrapper = document.createElement('div');
+      wrapper.className = 'question-wrapper';
+
+      const label = document.createElement('label');
+      label.innerHTML = `<strong>${key}</strong>:`;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = item.question;
+      input.onchange = () => {
+        flow[key].question = input.value;
+        saveCurrentFlow(document.getElementById('editIssueType').value, flow);
+      };
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+
+      const yesSel = document.createElement('select');
+      yesSel.id = `${key}-yes`;
+      yesSel.onchange = () => updateLink('yes', key);
+      const noSel = document.createElement('select');
+      noSel.id = `${key}-no`;
+      noSel.onchange = () => updateLink('no', key);
+
+      const noneOption = '<option value="">-- None --</option>';
+      let optionsHTML = noneOption;
+      questionOrder.forEach(qKey => {
+        if (qKey !== key) {
+          optionsHTML += `<option value="${qKey}" ${flow[key].yes === qKey ? 'selected' : ''}>${qKey}</option>`;
+        }
+      });
+
+      yesSel.innerHTML = optionsHTML;
+      noSel.innerHTML = optionsHTML;
+
+      wrapper.appendChild(document.createTextNode(" Yes → "));
+      wrapper.appendChild(yesSel);
+      wrapper.appendChild(document.createTextNode(" No → "));
+      wrapper.appendChild(noSel);
+
+      const reorderContainer = document.createElement('div');
+      reorderContainer.className = 'reorder-controls';
+      const upBtn = document.createElement('button');
+      upBtn.textContent = '↑';
+      upBtn.className = 'reorder-btn';
+      upBtn.onclick = () => moveQuestion(idx, -1);
+
+      const downBtn = document.createElement('button');
+      downBtn.textContent = '↓';
+      downBtn.className = 'reorder-btn';
+      downBtn.onclick = () => moveQuestion(idx, 1);
+
+      reorderContainer.appendChild(upBtn);
+      reorderContainer.appendChild(downBtn);
+      wrapper.appendChild(reorderContainer);
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = "Delete";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = () => deleteQuestion(key);
+      const deleteContainer = document.createElement('div');
+      deleteContainer.className = 'delete-btn-container';
+      deleteContainer.appendChild(delBtn);
+      wrapper.appendChild(deleteContainer);
+
+      container.appendChild(wrapper);
+    });
+  }
+
+  function exportFlow() {
+    const dataStr = JSON.stringify(flow, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = "flow.json";
+    link.click();
+  }
+
+  function importFlow() {
+    document.getElementById('jsonFileInput').click();
+  }
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      try {
+        const importedFlow = JSON.parse(event.target.result);
+        const issueType = document.getElementById('editIssueType').value;
+        flow = importedFlow;
+        questionOrder = Object.keys(flow);
+        saveCurrentFlow(issueType, flow);
+        renderAdminPanel();
+        alert("Flow imported successfully!");
+      } catch (err) {
+        alert("Invalid JSON file.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function saveState() {
+    const issueType = document.getElementById('editIssueType').value;
+    saveCurrentFlow(issueType, flow);
+    alert("Current state saved!");
+  }
+
+  function loadState() {
+    const issueType = document.getElementById('editIssueType').value;
+    flow = loadCurrentFlow(issueType);
+    questionOrder = Object.keys(flow);
+    renderAdminPanel();
+    alert("Saved state loaded!");
+  }
+
+  window.onload = () => {
+    populateIssueDropdown();
+    loadCustomizations();
+  };
+</script>
+</body>
+</html>
